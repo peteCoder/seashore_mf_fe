@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -39,6 +39,7 @@ import {
   TrendingDown,
   Plus,
   Percent,
+  LogOut,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -69,7 +70,7 @@ const menuItems: MenuSection[] = [
         icon: FileSpreadsheet,
         label: "Reports",
         submenu: [
-          { href: "/reports/overview", label: "Overview", icon: BarChart3 },
+          { href: "/reports", label: "Overview", icon: BarChart3 },
           {
             href: "/reports/financial",
             label: "Financial Reports",
@@ -216,7 +217,11 @@ const menuItems: MenuSection[] = [
         label: "Savings Accounts",
         submenu: [
           { href: "/savings", label: "All Accounts", icon: BookOpen },
-          { href: "/savings/new", label: "Open New Account", icon: UserPlus },
+          {
+            href: "/savings/create",
+            label: "Open New Account",
+            icon: UserPlus,
+          },
           {
             href: "/savings/pending",
             label: "Pending Approval",
@@ -395,11 +400,13 @@ const menuItems: MenuSection[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([
     "/loans",
     "/savings",
   ]);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const toggleExpand = (href: string) => {
     setExpandedItems((prev) =>
@@ -420,8 +427,19 @@ export function Sidebar() {
     return pathname.startsWith(itemHref + "/");
   };
 
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      setLoggingOut(false);
+    }
+  };
+
   return (
-    <aside className="w-60 sm:w-[260px] h-screen bg-white dark:bg-[#1e293b] border-r border-gray-200 dark:border-gray-800 flex flex-col overflow-y-auto">
+    <aside className="w-60 sm:w-[260px] h-screen bg-white dark:bg-[#1e293b] border-r border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
       {/* Logo */}
       <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-800 shrink-0">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -439,7 +457,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Menu Items */}
+      {/* Menu Items - Scrollable */}
       <nav className="flex-1 p-3 sm:p-4 space-y-4 sm:space-y-6 overflow-y-auto">
         {menuItems.map((section, idx) => {
           // Filter items based on user role
@@ -485,7 +503,6 @@ export function Sidebar() {
                               <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                             )}
                           </button>
-                          {/* ✅ FIXED: Added item.submenu check to prevent undefined error */}
                           {isExpanded && item.submenu && (
                             <ul className="mt-1 ml-5 sm:ml-7 space-y-0.5 sm:space-y-1">
                               {item.submenu.map((subitem) => {
@@ -538,6 +555,18 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Logout Button - Fixed at Bottom */}
+      <div className="border-t border-gray-200 dark:border-gray-800 p-3 sm:p-4 shrink-0">
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="w-full flex items-center justify-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-medium text-xs sm:text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span>{loggingOut ? "Logging out..." : "Logout"}</span>
+        </button>
+      </div>
     </aside>
   );
 }
