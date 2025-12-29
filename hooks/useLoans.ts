@@ -82,7 +82,7 @@ export function useApproveLoan() {
       reason,
     }: {
       id: string;
-      action: string;
+      action: "approve" | "reject"; // ✅ Fixed: Properly typed as union type
       reason?: string;
     }) => loanAPI.approve(id, action, reason),
     onSuccess: (_, { id }) => {

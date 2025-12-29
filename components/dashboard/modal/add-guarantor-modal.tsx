@@ -96,16 +96,33 @@ export function AddGuarantorModal({
     e.preventDefault();
 
     try {
+      // Convert null to undefined for monthly_income to match API expectation
+      const submitData = {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        relationship: formData.relationship,
+        address: formData.address,
+        occupation: formData.occupation,
+        employer: formData.employer,
+        monthly_income:
+          formData.monthly_income === null
+            ? undefined
+            : formData.monthly_income,
+        id_type: formData.id_type,
+        id_number: formData.id_number,
+      };
+
       if (isEditing && existingGuarantor?.id) {
         await updateGuarantor.mutateAsync({
           clientId,
           guarantorId: existingGuarantor.id,
-          data: formData,
+          data: submitData,
         });
       } else {
         await addGuarantor.mutateAsync({
           clientId,
-          data: formData,
+          data: submitData,
         });
       }
 

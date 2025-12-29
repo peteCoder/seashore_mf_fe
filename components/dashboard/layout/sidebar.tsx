@@ -33,6 +33,12 @@ import {
   BookOpen,
   ShieldCheck,
   AlertCircle,
+  CheckCircle,
+  XCircle,
+  Calendar,
+  TrendingDown,
+  Plus,
+  Percent,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -387,16 +393,6 @@ const menuItems: MenuSection[] = [
   },
 ];
 
-// Import missing icons
-import {
-  CheckCircle,
-  XCircle,
-  Calendar,
-  TrendingDown,
-  Plus,
-  Percent,
-} from "lucide-react";
-
 export function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -489,7 +485,8 @@ export function Sidebar() {
                               <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                             )}
                           </button>
-                          {isExpanded && (
+                          {/* ✅ FIXED: Added item.submenu check to prevent undefined error */}
+                          {isExpanded && item.submenu && (
                             <ul className="mt-1 ml-5 sm:ml-7 space-y-0.5 sm:space-y-1">
                               {item.submenu.map((subitem) => {
                                 const SubIcon = subitem.icon || FileText;
