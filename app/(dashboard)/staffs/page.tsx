@@ -24,6 +24,16 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useBranches } from "@/hooks/useBranches";
 
+// Define profile type
+interface StaffProfile {
+  employee_id?: string;
+  designation?: string;
+  department?: string;
+  hire_date?: string;
+  salary?: number;
+  [key: string]: any;
+}
+
 export default function StaffsPage() {
   const router = useRouter();
   const { user } = useAuth();
@@ -65,6 +75,11 @@ export default function StaffsPage() {
   });
   const [selectedRow, setSelectedRow] = useState<StaffMember | null>(null);
   const [actionType, setActionType] = useState<string>("");
+
+  // Helper function to safely get profile data with proper typing
+  const getProfileData = (row: StaffMember): StaffProfile => {
+    return (row.profile || row.staff_profile || {}) as StaffProfile;
+  };
 
   const handleRowClick = (row: StaffMember) => {
     router.push(`/staffs/${row.id}`);
@@ -160,11 +175,6 @@ export default function StaffsPage() {
     } catch (error) {
       console.error("Add staff failed:", error);
     }
-  };
-
-  // Helper function to safely get profile data
-  const getProfileData = (row: StaffMember) => {
-    return row.profile || row.staff_profile || {};
   };
 
   // Columns with proper profile access
