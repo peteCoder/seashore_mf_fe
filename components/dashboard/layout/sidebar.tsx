@@ -376,7 +376,7 @@ const menuItems: MenuSection[] = [
         roles: ["manager", "director", "admin"],
         submenu: [
           {
-            href: "/settings/general",
+            href: "/settings",
             label: "General Settings",
             icon: Settings,
           },

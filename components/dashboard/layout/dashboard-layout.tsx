@@ -40,34 +40,31 @@ export function DashboardLayout({
 
       {/* Main Content */}
       <div className="lg:ml-64 min-h-screen flex flex-col">
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden sticky top-0 z-30 bg-white dark:bg-[#1e293b] border-b border-gray-200 dark:border-gray-800 px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Button
+        {/* Desktop Header */}
+        <div className="flex items-center gap-1.5 sticky top-0 z-20 bg-white dark:bg-[#1e293b] border-b border-gray-200 dark:border-gray-800 px-6 lg:px-8 py-4">
+          <div className="block lg:hidden">
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-            >
+            > */}
+            <div className="p-1 mr-3" onClick={() => setSidebarOpen(!sidebarOpen)}>
               {sidebarOpen ? (
                 <X className="h-6 w-6" />
               ) : (
                 <Menu className="h-6 w-6" />
               )}
-            </Button>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white truncate">
-              {title}
-            </h1>
-            {/* Spacer for alignment */}
-            <div className="w-10" />
-          </div>
-        </div>
+            </div>
 
-        {/* Desktop Header */}
-        <div className="hidden lg:block sticky top-0 z-20 bg-white dark:bg-[#1e293b] border-b border-gray-200 dark:border-gray-800 px-6 lg:px-8 py-4">
-          <TopHeader
-            title={title}
-            profileImage={profileImage} // Pass it here
-          />
+            {/* </Button> */}
+          </div>
+
+          <div className="flex-1">
+            <TopHeader
+              title={title}
+              profileImage={profileImage} // Pass it here
+            />
+          </div>
         </div>
 
         {/* Page Content */}
